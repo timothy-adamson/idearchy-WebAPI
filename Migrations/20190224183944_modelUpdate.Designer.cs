@@ -3,15 +3,17 @@ using System;
 using IdeasAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace IdeasAPI.Migrations
 {
     [DbContext(typeof(IdeaContext))]
-    partial class IdeaContextModelSnapshot : ModelSnapshot
+    [Migration("20190224183944_modelUpdate")]
+    partial class modelUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,7 +37,7 @@ namespace IdeasAPI.Migrations
 
                     b.Property<bool>("IsConundrum");
 
-                    b.Property<int?>("ParentID");
+                    b.Property<int>("ParentID");
 
                     b.HasKey("IdeaID");
 
@@ -48,7 +50,8 @@ namespace IdeasAPI.Migrations
                 {
                     b.HasOne("IdeasAPI.Models.Idea", "ParentIdea")
                         .WithMany("ChildrenIdeas")
-                        .HasForeignKey("ParentID");
+                        .HasForeignKey("ParentID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }
