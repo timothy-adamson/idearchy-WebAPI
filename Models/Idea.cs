@@ -18,8 +18,6 @@ namespace IdeasAPI.Models
         public bool IsConundrum {get; set;}
         [StringLength(500), MinLength(1)]
         public string IdeaText {get;set;}
-        [DataType(DataType.Date)]
-        [DisplayFormat(DataFormatString="{0:yyyy-MM-dd}")]
         public DateTime DateCreated {get;set;}
         public string FromCountry {get;set;}
         public Int32? Colour {get;set;}

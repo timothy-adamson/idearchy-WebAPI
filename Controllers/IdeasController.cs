@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections; 
 using System.Collections.Generic; 
 using System.Linq; 
@@ -16,28 +17,80 @@ namespace IdeasAPI.Controllers {
         {            
             _context = context;
         }
-
+        
         [HttpGet]
-        public ActionResult<List<string>> GetAll()
+        public ActionResult<List<IdeaDTO>> GetAll()
         {
-            List<string> allTexts = new List<string>();
+            var IdeasDTO = from i in _context.Ideas select new IdeaDTO(){
 
-            foreach(Idea idea in _context.Ideas)
-            {
-                allTexts.Add(idea.IdeaText);
-            }
-            return allTexts;
+                IdeaID = i.IdeaID,
+                ParentID = i.ParentID,
+                IsConundrum = i.IsConundrum,
+                IdeaText = i.IdeaText,
+                DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                FromCountry = i.FromCountry,
+                Colour = i.Colour
+            };
+
+            return IdeasDTO.ToList();;
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Idea> GetID(int id)
+        public ActionResult<IdeaDTO> GetID(int id)
         {
-            var idea = _context.Ideas.Find(id);
-            if (idea == null)
+            var i = _context.Ideas.Find(id);
+            
+            var ideaDTO = new IdeaDTO() { 
+                IdeaID = i.IdeaID,
+                ParentID = i.ParentID,
+                IsConundrum = i.IsConundrum,
+                IdeaText = i.IdeaText,
+                DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                FromCountry = i.FromCountry,
+                Colour = i.Colour
+            };
+
+            if (i == null)
             {
                 return NotFound();
             }
-            return idea;
+            return ideaDTO;
+        }
+
+        [HttpPost]
+        public ActionResult<Idea> Add([FromBody]IdeaDTO newIdea)
+        {
+            if (ModelState.IsValid)
+            {
+                var dbIdea = new Idea() {
+                    ParentID = newIdea.ParentID,
+                    IsConundrum = newIdea.IsConundrum,
+                    IdeaText = newIdea.IdeaText,
+                    DateCreated = DateTime.ParseExact(
+                        newIdea.DateCreated,"yyyy-MM-ddTHH:mm:ssZ",System.Globalization.CultureInfo.InvariantCulture),
+                    FromCountry = newIdea.FromCountry,
+                    Colour = newIdea.Colour
+                };
+
+                _context.Ideas.Add(dbIdea);
+                _context.SaveChanges();
+
+                var returnIdea = new IdeaDTO() { 
+                    IdeaID = dbIdea.IdeaID,
+                    ParentID = dbIdea.ParentID,
+                    IsConundrum = dbIdea.IsConundrum,
+                    IdeaText = dbIdea.IdeaText,
+                    DateCreated = dbIdea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    FromCountry = dbIdea.FromCountry,
+                    Colour = dbIdea.Colour
+                };
+
+                return Ok(returnIdea);
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
     } 
 }
