@@ -27,7 +27,7 @@ namespace IdeasAPI.Controllers {
                 ParentID = i.ParentID,
                 IsConundrum = i.IsConundrum,
                 IdeaText = i.IdeaText,
-                DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 FromCountry = i.FromCountry,
                 Colour = i.Colour
             };
@@ -45,7 +45,7 @@ namespace IdeasAPI.Controllers {
                 ParentID = i.ParentID,
                 IsConundrum = i.IsConundrum,
                 IdeaText = i.IdeaText,
-                DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 FromCountry = i.FromCountry,
                 Colour = i.Colour
             };
@@ -67,7 +67,7 @@ namespace IdeasAPI.Controllers {
                     IsConundrum = newIdea.IsConundrum,
                     IdeaText = newIdea.IdeaText,
                     DateCreated = DateTime.ParseExact(
-                        newIdea.DateCreated,"yyyy-MM-ddTHH:mm:ssZ",System.Globalization.CultureInfo.InvariantCulture),
+                        newIdea.DateCreated,"yyyy-MM-ddTHH:mm:ss.fffZ",System.Globalization.CultureInfo.InvariantCulture),
                     FromCountry = newIdea.FromCountry,
                     Colour = newIdea.Colour
                 };
@@ -80,7 +80,7 @@ namespace IdeasAPI.Controllers {
                     ParentID = dbIdea.ParentID,
                     IsConundrum = dbIdea.IsConundrum,
                     IdeaText = dbIdea.IdeaText,
-                    DateCreated = dbIdea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ssZ"),
+                    DateCreated = dbIdea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                     FromCountry = dbIdea.FromCountry,
                     Colour = dbIdea.Colour
                 };
