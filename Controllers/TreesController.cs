@@ -21,30 +21,36 @@ namespace IdeasAPI.Controllers {
         [HttpGet]
         public ActionResult<List<IdeaDTO>> GetTree([FromQuery] string date)
         {
+            if (date == null){return BadRequest();}
+            
             var RequestedDate = DateTime.ParseExact(
                     date,
                     "yyyy-MM-ddTHH:mm:ss.fffZ",
                     System.Globalization.CultureInfo.InvariantCulture);
 
-            var RequestedTree = from tree in _context.Trees
-                                where tree.Date.ToString("yyyy-MM-ddTHH:mm:ss.fffZ") == date
-                                select tree.Ideas;
+            var RequestedTree = _context.Trees
+                                .Where(t => t.Date.Date == RequestedDate.Date)
+                                .FirstOrDefault();
 
             if (RequestedTree != null)
             {
                 List<IdeaDTO> IdeasDTO = new List<IdeaDTO>();
-
-                foreach(Idea idea in RequestedTree)
+                List<Idea> IdeasInTree = new List<Idea>();
+                
+                if (RequestedTree.IdeasIDs.Count() == 0)
                 {
-                    IdeasDTO.Add(new IdeaDTO() {
-                        IdeaID = idea.IdeaID,
-                        ParentID = idea.ParentID,
-                        IsConundrum = idea.IsConundrum,
-                        IdeaText = idea.IdeaText,
-                        DateCreated = idea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
-                        FromCountry = idea.FromCountry,
-                        Colour = idea.Colour
-                    });
+                    foreach(Idea idea in IdeasInTree)
+                    {
+                        IdeasDTO.Add(new IdeaDTO() {
+                            IdeaID = idea.IdeaID,
+                            ParentID = idea.ParentID,
+                            IsConundrum = idea.IsConundrum,
+                            IdeaText = idea.IdeaText,
+                            DateCreated = idea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                            FromCountry = idea.FromCountry,
+                            Colour = idea.Colour
+                        });
+                    }
                 }
 
                 return IdeasDTO.ToList();;
@@ -55,6 +61,9 @@ namespace IdeasAPI.Controllers {
                     Date = DateTime.Today,
                     IdeasIDs = new List<int>()
                 };
+
+                _context.Trees.Add(NewTree);
+                _context.SaveChanges();
 
                 return new List<IdeaDTO>().ToList();
             }
