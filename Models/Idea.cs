@@ -15,6 +15,9 @@ namespace IdeasAPI.Models
         public virtual Idea ParentIdea {get; set;}
         [InverseProperty("ParentIdea")]
         public virtual ICollection<Idea> ChildrenIdeas {get; set;}
+        public int TreeID {get;set;}
+        [ForeignKey("TreeID")]
+        public virtual Tree Tree {get;set;}
         public bool IsConundrum {get; set;}
         [StringLength(500), MinLength(1)]
         public string IdeaText {get;set;}

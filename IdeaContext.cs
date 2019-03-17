@@ -11,5 +11,7 @@ namespace IdeasAPI.Models
             }
         
         public DbSet<Idea> Ideas {get;set;}
+
+        public DbSet<Tree> Trees {get;set;}
     }
 }
