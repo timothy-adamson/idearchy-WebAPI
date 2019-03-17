@@ -11,8 +11,6 @@ namespace IdeasAPI.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int TreeID {get;set;}
         public DateTime Date {get;set;}
-        public List<int> IdeasIDs {get;set;}
-        [ForeignKey("IdeasIDs")]
         public virtual ICollection<Idea> Ideas {get; set;}
     }
 }

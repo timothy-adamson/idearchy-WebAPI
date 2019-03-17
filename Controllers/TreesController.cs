@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections; 
 using System.Collections.Generic; 
@@ -30,16 +31,16 @@ namespace IdeasAPI.Controllers {
 
             var RequestedTree = _context.Trees
                                 .Where(t => t.Date.Date == RequestedDate.Date)
+                                .Include(t => t.Ideas)
                                 .FirstOrDefault();
 
             if (RequestedTree != null)
             {
                 List<IdeaDTO> IdeasDTO = new List<IdeaDTO>();
-                List<Idea> IdeasInTree = new List<Idea>();
                 
-                if (RequestedTree.IdeasIDs.Count() == 0)
+                if (RequestedTree.Ideas != null)
                 {
-                    foreach(Idea idea in IdeasInTree)
+                    foreach(Idea idea in RequestedTree.Ideas)
                     {
                         IdeasDTO.Add(new IdeaDTO() {
                             IdeaID = idea.IdeaID,
@@ -59,7 +60,6 @@ namespace IdeasAPI.Controllers {
             {
                 var NewTree = new Tree(){
                     Date = DateTime.Today,
-                    IdeasIDs = new List<int>()
                 };
 
                 _context.Trees.Add(NewTree);
@@ -71,7 +71,6 @@ namespace IdeasAPI.Controllers {
             {
                 return NotFound();
             }
-
         }
     } 
 }

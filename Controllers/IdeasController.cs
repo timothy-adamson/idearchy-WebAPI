@@ -62,7 +62,12 @@ namespace IdeasAPI.Controllers {
         {
             if (ModelState.IsValid)
             {
+                var TodaysTree = _context.Trees
+                            .Where(t => t.Date.Date == DateTime.Today)
+                            .FirstOrDefault();
+
                 var dbIdea = new Idea() {
+                    TreeID = TodaysTree.TreeID,
                     ParentID = newIdea.ParentID,
                     IsConundrum = newIdea.IsConundrum,
                     IdeaText = newIdea.IdeaText,
