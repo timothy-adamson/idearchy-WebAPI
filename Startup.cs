@@ -31,7 +31,7 @@ namespace IdeasAPI
 
             services.AddDbContext<IdeaContext>(options =>
 
-            options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
+            options.UseSqlServer(Configuration.GetConnectionString("Azure")));
 
             services.AddCors(options =>
             {

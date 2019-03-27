@@ -29,7 +29,8 @@ namespace IdeasAPI.Controllers {
                 IdeaText = i.IdeaText,
                 DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 FromCountry = i.FromCountry,
-                Colour = i.Colour
+                Colour = i.Colour,
+                Score = i.Score
             };
 
             return IdeasDTO.ToList();;
@@ -47,7 +48,8 @@ namespace IdeasAPI.Controllers {
                 IdeaText = i.IdeaText,
                 DateCreated = i.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                 FromCountry = i.FromCountry,
-                Colour = i.Colour
+                Colour = i.Colour,
+                Score = i.Score
             };
 
             if (i == null)
@@ -58,7 +60,7 @@ namespace IdeasAPI.Controllers {
         }
 
         [HttpPost]
-        public ActionResult<Idea> Add([FromBody]IdeaDTO newIdea)
+        public ActionResult<IdeaDTO> Add([FromBody]IdeaDTO newIdea)
         {
             if (ModelState.IsValid)
             {
@@ -74,7 +76,8 @@ namespace IdeasAPI.Controllers {
                     DateCreated = DateTime.ParseExact(
                         newIdea.DateCreated,"yyyy-MM-ddTHH:mm:ss.fffZ",System.Globalization.CultureInfo.InvariantCulture),
                     FromCountry = newIdea.FromCountry,
-                    Colour = newIdea.Colour
+                    Colour = newIdea.Colour,
+                    Score = newIdea.Score
                 };
 
                 _context.Ideas.Add(dbIdea);
@@ -87,7 +90,8 @@ namespace IdeasAPI.Controllers {
                     IdeaText = dbIdea.IdeaText,
                     DateCreated = dbIdea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                     FromCountry = dbIdea.FromCountry,
-                    Colour = dbIdea.Colour
+                    Colour = dbIdea.Colour,
+                    Score = dbIdea.Score
                 };
 
                 return Ok(returnIdea);
@@ -96,6 +100,42 @@ namespace IdeasAPI.Controllers {
             {
                 return BadRequest();
             }
+        }
+
+        [HttpPatch("{id}")]
+        public ActionResult<IdeaDTO> AddScore(int id,[FromBody]bool status)
+        {
+            var dbIdea = _context.Ideas.Find(id);
+
+            if (dbIdea != null)
+            {
+                if (status)
+                {
+                    dbIdea.Score = dbIdea.Score + 1;
+                }
+                else
+                {
+                    dbIdea.Score = dbIdea.Score - 1;
+                }
+                _context.SaveChanges();
+            }
+            else
+            {
+                return NotFound();
+            }
+
+            var returnIdea = new IdeaDTO() { 
+                IdeaID = dbIdea.IdeaID,
+                ParentID = dbIdea.ParentID,
+                IsConundrum = dbIdea.IsConundrum,
+                IdeaText = dbIdea.IdeaText,
+                DateCreated = dbIdea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
+                FromCountry = dbIdea.FromCountry,
+                Colour = dbIdea.Colour,
+                Score = dbIdea.Score
+            };
+
+            return Ok(returnIdea);
         }
     } 
 }

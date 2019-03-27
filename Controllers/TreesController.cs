@@ -49,7 +49,8 @@ namespace IdeasAPI.Controllers {
                             IdeaText = idea.IdeaText,
                             DateCreated = idea.DateCreated.ToString("yyyy-MM-ddTHH:mm:ss.fffZ"),
                             FromCountry = idea.FromCountry,
-                            Colour = idea.Colour
+                            Colour = idea.Colour,
+                            Score = idea.Score
                         });
                     }
                 }

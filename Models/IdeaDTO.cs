@@ -11,5 +11,6 @@ namespace IdeasAPI.Models
         public string DateCreated {get;set;}
         public string FromCountry {get;set;}
         public Int32? Colour {get;set;}
+        public int Score {get;set;}
     }
 }
