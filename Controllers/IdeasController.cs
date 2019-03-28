@@ -64,8 +64,14 @@ namespace IdeasAPI.Controllers {
         {
             if (ModelState.IsValid)
             {
+                var CurrentTreeDate = new DateTime(
+                    DateTime.Today.Year,
+                    DateTime.Today.Month,
+                    DateTime.Today.Day - (int)DateTime.Today.DayOfWeek
+                );
+
                 var TodaysTree = _context.Trees
-                            .Where(t => t.Date.Date == DateTime.Today)
+                            .Where(t => t.Date.Date == CurrentTreeDate.Date)
                             .FirstOrDefault();
 
                 var dbIdea = new Idea() {

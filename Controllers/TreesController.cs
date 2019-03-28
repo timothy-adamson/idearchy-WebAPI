@@ -36,7 +36,7 @@ namespace IdeasAPI.Controllers {
                 return new DateTime(
                     Date.Year,
                     Date.Month,
-                    Weekday != 0 ? Date.Day - Weekday : Date.Day
+                    Date.Day - Weekday
                 );
             };
 
