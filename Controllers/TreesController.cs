@@ -24,23 +24,37 @@ namespace IdeasAPI.Controllers {
         {
             if (date == null){return BadRequest();}
             
-            var RequestedDate = DateTime.ParseExact(
+            var RequestDate = DateTime.ParseExact(
                     date,
                     "yyyy-MM-ddTHH:mm:ss.fffZ",
                     System.Globalization.CultureInfo.InvariantCulture);
 
-            var RequestedTree = _context.Trees
-                                .Where(t => t.Date.Date == RequestedDate.Date)
+            Func<DateTime, DateTime> GetWeekStart = (DateTime Date) => 
+            {
+                int Weekday = (int)Date.DayOfWeek;
+
+                return new DateTime(
+                    Date.Year,
+                    Date.Month,
+                    Weekday != 0 ? Date.Day - Weekday : Date.Day
+                );
+            };
+
+            DateTime RequestWeekStart = GetWeekStart(RequestDate);
+            DateTime CurrentWeekStart = GetWeekStart(DateTime.Today);
+
+            var RequestTree = _context.Trees
+                                .Where(t => t.Date.Date == RequestWeekStart.Date)
                                 .Include(t => t.Ideas)
                                 .FirstOrDefault();
 
-            if (RequestedTree != null)
+            if (RequestTree != null)
             {
                 List<IdeaDTO> IdeasDTO = new List<IdeaDTO>();
                 
-                if (RequestedTree.Ideas != null)
+                if (RequestTree.Ideas != null)
                 {
-                    foreach(Idea idea in RequestedTree.Ideas)
+                    foreach(Idea idea in RequestTree.Ideas)
                     {
                         IdeasDTO.Add(new IdeaDTO() {
                             IdeaID = idea.IdeaID,
@@ -57,10 +71,10 @@ namespace IdeasAPI.Controllers {
 
                 return IdeasDTO.ToList();;
             }
-            else if (RequestedDate.Date == DateTime.Today)
+            else if (RequestWeekStart.Date == CurrentWeekStart.Date)
             {
                 var NewTree = new Tree(){
-                    Date = DateTime.Today,
+                    Date = CurrentWeekStart.Date
                 };
 
                 _context.Trees.Add(NewTree);
