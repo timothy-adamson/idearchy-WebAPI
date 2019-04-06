@@ -64,10 +64,12 @@ namespace IdeasAPI.Controllers {
         {
             if (ModelState.IsValid)
             {
-                var CurrentTreeDate = new DateTime(
-                    DateTime.Today.Year,
-                    DateTime.Today.Month,
-                    DateTime.Today.Day - (int)DateTime.Today.DayOfWeek
+                DateTime CurrentWeekStart = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+
+                DateTime CurrentTreeDate = new DateTime(
+                    CurrentWeekStart.Year,
+                    CurrentWeekStart.Month,
+                    CurrentWeekStart.Day
                 );
 
                 var TodaysTree = _context.Trees
