@@ -33,11 +33,9 @@ namespace IdeasAPI.Controllers {
             {
                 int Weekday = (int)Date.DayOfWeek;
 
-                return new DateTime(
-                    Date.Year,
-                    Date.Month,
-                    Date.Day - Weekday
-                );
+                DateTime WeekStart = Date.AddDays(-Weekday);
+
+                return WeekStart;
             };
 
             DateTime RequestWeekStart = GetWeekStart(RequestDate);
