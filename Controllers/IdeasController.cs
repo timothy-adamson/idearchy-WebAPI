@@ -18,6 +18,7 @@ namespace IdeasAPI.Controllers {
             _context = context;
         }
         
+        //Return All ideas in the database as DTOs
         [HttpGet]
         public ActionResult<List<IdeaDTO>> GetAll()
         {
@@ -36,6 +37,7 @@ namespace IdeasAPI.Controllers {
             return IdeasDTO.ToList();;
         }
 
+        // Get a single idea in the database as a DTO
         [HttpGet("{id}")]
         public ActionResult<IdeaDTO> GetID(int id)
         {
@@ -59,11 +61,13 @@ namespace IdeasAPI.Controllers {
             return ideaDTO;
         }
 
+        // Add a new Idea to the database if it is valid
         [HttpPost]
         public ActionResult<IdeaDTO> Add([FromBody]IdeaDTO newIdea)
         {
             if (ModelState.IsValid)
             {
+                //Date manipulation enables counting of weeks and allocation of posts to the correct tree
                 DateTime CurrentWeekStart = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
 
                 DateTime CurrentTreeDate = new DateTime(
@@ -72,6 +76,7 @@ namespace IdeasAPI.Controllers {
                     CurrentWeekStart.Day
                 );
 
+                //Users can only add to the current tree
                 var TodaysTree = _context.Trees
                             .Where(t => t.Date.Date == CurrentTreeDate.Date)
                             .FirstOrDefault();
@@ -91,6 +96,7 @@ namespace IdeasAPI.Controllers {
                 _context.Ideas.Add(dbIdea);
                 _context.SaveChanges();
 
+                //Return the new idea as a DTO on success
                 var returnIdea = new IdeaDTO() { 
                     IdeaID = dbIdea.IdeaID,
                     ParentID = dbIdea.ParentID,
@@ -110,11 +116,13 @@ namespace IdeasAPI.Controllers {
             }
         }
 
+        // Update the score of a particular Idea
         [HttpPatch("{id}")]
         public ActionResult<IdeaDTO> AddScore(int id,[FromBody]bool status)
         {
             var dbIdea = _context.Ideas.Find(id);
 
+            // Status is defined by whether user has previously voted on this item
             if (dbIdea != null)
             {
                 if (status)

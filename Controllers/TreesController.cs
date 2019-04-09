@@ -18,12 +18,14 @@ namespace IdeasAPI.Controllers {
         {            
             _context = context;
         }
-
+        
+        //Return all Tree containing ideas for a particular date request
         [HttpGet]
         public ActionResult<List<IdeaDTO>> GetTree([FromQuery] string date)
         {
             if (date == null){return BadRequest();}
             
+            //Determine what week the requested date belongs to
             var RequestDate = DateTime.ParseExact(
                     date,
                     "yyyy-MM-ddTHH:mm:ss.fffZ",
@@ -46,6 +48,7 @@ namespace IdeasAPI.Controllers {
                                 .Include(t => t.Ideas)
                                 .FirstOrDefault();
 
+            //Return all ideas in tree if request is valid
             if (RequestTree != null)
             {
                 List<IdeaDTO> IdeasDTO = new List<IdeaDTO>();
@@ -69,6 +72,7 @@ namespace IdeasAPI.Controllers {
 
                 return IdeasDTO.ToList();;
             }
+            //If request is valid but no tree exists for the current week produce a new tree
             else if (RequestWeekStart.Date == CurrentWeekStart.Date)
             {
                 var NewTree = new Tree(){
